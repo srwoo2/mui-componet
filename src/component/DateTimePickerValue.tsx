@@ -6,7 +6,6 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import IconButton from "@mui/material/IconButton";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import Typography from "@mui/material/Typography";
 import "dayjs/locale/ko";
 
 export default function DateTimePickerValue() {
@@ -25,38 +24,40 @@ export default function DateTimePickerValue() {
     clearButtonLabel: "초기화",
   };
 
-  const CustomCalendarHeader = React.memo(({ currentMonth, onMonthChange }) => {
-    const formattedDate = currentMonth ? currentMonth.format("YYYY년 M월") : "";
+  const CustomCalendarHeader = React.memo(
+    ({ currentMonth, onMonthChange }: any) => {
+      const formattedDate = currentMonth
+        ? currentMonth.format("YYYY년 M월")
+        : "";
 
-    const handlePrevMonth = React.useCallback(() => {
-      onMonthChange(currentMonth.subtract(1, "month"));
-    }, [currentMonth, onMonthChange]);
+      const handlePrevMonth = () => {
+        onMonthChange(currentMonth.subtract(1, "month"), "left");
+      };
 
-    const handleNextMonth = React.useCallback(() => {
-      onMonthChange(currentMonth.add(1, "month"));
-    }, [currentMonth, onMonthChange]);
+      const handleNextMonth = () => {
+        onMonthChange(currentMonth.add(1, "month"), "right");
+      };
 
-    return (
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "10px",
-        }}
-      >
-        <IconButton onClick={handlePrevMonth} edge="start">
-          <ArrowLeftIcon />
-        </IconButton>
-        <Typography variant="h7" style={{ margin: "0 10px" }}>
-          {formattedDate}
-        </Typography>
-        <IconButton onClick={handleNextMonth} edge="end">
-          <ArrowRightIcon />
-        </IconButton>
-      </div>
-    );
-  });
+      return (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "10px",
+          }}
+        >
+          <IconButton onClick={handlePrevMonth} edge="start">
+            <ArrowLeftIcon />
+          </IconButton>
+          <span>{formattedDate}</span>
+          <IconButton onClick={handleNextMonth} edge="end">
+            <ArrowRightIcon />
+          </IconButton>
+        </div>
+      );
+    }
+  );
 
   return (
     <LocalizationProvider
@@ -77,7 +78,7 @@ export default function DateTimePickerValue() {
         }}
         slotProps={{
           calendarHeader: {
-            currentMonth: value,
+            currentMonth: value ?? dayjs(),
             onMonthChange: setValue,
           },
         }}
@@ -96,8 +97,8 @@ export default function DateTimePickerValue() {
         }}
         slotProps={{
           calendarHeader: {
-            currentMonth: value2,
-            onMonthChange: setValue2,
+            currentMonth: value2 ?? dayjs(),
+            onMonthChange: (newMonth: Dayjs) => setValue2(newMonth),
           },
         }}
       />
